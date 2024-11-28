@@ -34,7 +34,6 @@ const LotteryApp = () => {
         const winner = availableParticipants[winnerIndex];
         
         newResults.push({
-          id: `#${Date.now()}${Math.floor(Math.random() * 10000)}`,
           winner,
           prize: prize.name
         });
@@ -49,10 +48,10 @@ const LotteryApp = () => {
 
   const exportToCSV = () => {
     const csvContent = results
-      .map(({ id, winner, prize }) => `${id},${winner},${prize}`)
+      .map(({ winner, prize }) => `${winner},${prize}`)
       .join('\n');
     
-    const blob = new Blob([`ID,獲獎者,獎項\n${csvContent}`], { type: 'text/csv' });
+    const blob = new Blob([`獲獎者,獎項\n${csvContent}`], { type: 'text/csv' });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
@@ -85,7 +84,7 @@ const LotteryApp = () => {
             </h2>
             <button
               onClick={addPrize}
-              className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors flex items-center gap-2"
+              className="px-4 py-2 bg-blue-200 text-blue-700 rounded-lg hover:bg-blue-300 transition-colors flex items-center gap-2"
             >
               <Plus size={20} />
               新增獎項
@@ -126,7 +125,7 @@ const LotteryApp = () => {
           <textarea
             value={participants}
             onChange={(e) => setParticipants(e.target.value)}
-            className="w-full h-48 p-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full h-[32rem] p-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             placeholder="請輸入參與者名單，每行一個名單"
           />
         </div>
@@ -135,7 +134,7 @@ const LotteryApp = () => {
         <div className="flex gap-4 flex-wrap">
           <button
             onClick={drawWinners}
-            className="flex-1 md:flex-none px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors flex items-center justify-center gap-2"
+            className="flex-1 md:flex-none px-6 py-3 bg-blue-200 text-blue-700 rounded-lg hover:bg-blue-300 transition-colors flex items-center justify-center gap-2"
           >
             <RefreshCw size={20} />
             抽獎
@@ -143,7 +142,7 @@ const LotteryApp = () => {
           {drawn && (
             <button
               onClick={exportToCSV}
-              className="flex-1 md:flex-none px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors flex items-center justify-center gap-2"
+              className="flex-1 md:flex-none px-6 py-3 bg-blue-200 text-blue-700 rounded-lg hover:bg-blue-300 transition-colors flex items-center justify-center gap-2"
             >
               <Download size={20} />
               匯出CSV
@@ -155,18 +154,16 @@ const LotteryApp = () => {
         {drawn && (
           <div className="bg-white rounded-xl shadow-lg p-6 space-y-4 overflow-x-auto">
             <h2 className="text-xl font-semibold text-gray-800">抽獎結果</h2>
-            <table className="w-full min-w-[600px]">
+            <table className="w-full">
               <thead className="bg-gray-50">
                 <tr>
-                  <th className="p-3 text-left text-gray-600 font-semibold rounded-tl-lg">ID</th>
-                  <th className="p-3 text-left text-gray-600 font-semibold">獲獎者</th>
+                  <th className="p-3 text-left text-gray-600 font-semibold rounded-tl-lg">獲獎者</th>
                   <th className="p-3 text-left text-gray-600 font-semibold rounded-tr-lg">獎項</th>
                 </tr>
               </thead>
               <tbody>
                 {results.map((result, index) => (
                   <tr key={index} className="border-t border-gray-100 hover:bg-gray-50 transition-colors">
-                    <td className="p-3 text-gray-800">{result.id}</td>
                     <td className="p-3 text-gray-800">{result.winner}</td>
                     <td className="p-3 text-gray-800">{result.prize}</td>
                   </tr>
