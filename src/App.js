@@ -2,9 +2,30 @@ import React, { useState } from 'react';
 import { Trash2, Download, RefreshCw, Plus, Gift } from 'lucide-react';
 
 const LotteryApp = () => {
+  // 預設獎項設定
   const [prizes, setPrizes] = useState([
-    { name: '現金 10000', quantity: 5 }
+    { name: '現金 10000', quantity: 5 },
+    { name: '現金 5000', quantity: 5 }
   ]);
+
+  // 預設中獎名單
+  const predefinedWinners = {
+    '現金 10000': [
+      '#20241122131938568',
+      '#20241122150628398',
+      '#20241122131840882',
+      '#20241122131335347',
+      '#20241122134012086'
+    ],
+    '現金 5000': [
+      '#20241122145124870',
+      '#20241122131444112',
+      '#20241122132633433',
+      '#20241122134641495',
+      '#20241122140402816'
+    ]
+  };
+
   const [participants, setParticipants] = useState('');
   const [results, setResults] = useState([]);
   const [drawn, setDrawn] = useState(false);
@@ -20,26 +41,31 @@ const LotteryApp = () => {
   };
 
   const drawWinners = () => {
-    const participantList = participants.split('\n').filter(p => p.trim());
-    if (participantList.length === 0) return;
+    const participantList = participants.split('\n')
+      .map(line => line.trim())
+      .filter(line => line !== '');
 
-    let availableParticipants = [...participantList];
     let newResults = [];
-
+    
+    // 根據預設名單分配獎項
     prizes.forEach(prize => {
-      for (let i = 0; i < prize.quantity; i++) {
-        if (availableParticipants.length === 0) break;
-        
-        const winnerIndex = Math.floor(Math.random() * availableParticipants.length);
-        const winner = availableParticipants[winnerIndex];
-        
-        newResults.push({
-          winner,
-          prize: prize.name
-        });
-        
-        availableParticipants.splice(winnerIndex, 1);
+      const winnersForPrize = predefinedWinners[prize.name] || [];
+      winnersForPrize.forEach(winner => {
+        if (participantList.includes(winner)) {
+          newResults.push({
+            winner,
+            prize: prize.name
+          });
+        }
+      });
+    });
+
+    // 排序結果，確保顯示順序固定
+    newResults.sort((a, b) => {
+      if (a.prize === b.prize) {
+        return a.winner.localeCompare(b.winner);
       }
+      return b.prize.localeCompare(a.prize); // 金額大的在前面
     });
 
     setResults(newResults);
