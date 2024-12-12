@@ -10,8 +10,8 @@ const LotteryApp = () => {
   
   // 預設得獎者名單
   const predefinedWinners = [
-    '#20241122131938568',
-    '#20241122150628398'
+    '#20241122130821751',
+    '#20241122130837863'
   ];
 
   const [participants, setParticipants] = useState('');
