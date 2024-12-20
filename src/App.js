@@ -5,12 +5,21 @@ const LotteryApp = () => {
   // 獎項資訊狀態
   const [prize, setPrize] = useState({
     name: 'V-Lift全能高頻熱波美容儀',
-    quantity: 2
+    quantity: 10
   });
   
   // 預設得獎者名單
   const predefinedWinners = [
-
+    "20241213131917425",
+    "20241213134533739",
+    "20241213638850529",
+    "20241213294312248",
+    "20241213358858707",
+    "20241213619607957",
+    "20241213634151029",
+    "20241213159489806",
+    "20241213325214130",
+    "20241213813349863"
   ];
 
   const [participants, setParticipants] = useState('');
