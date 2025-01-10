@@ -120,24 +120,24 @@ const LotteryApp = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 p-4 md:p-8">
+    <div className="min-h-screen bg-gradient-to-br from-red-50 to-rose-100 p-4 md:p-8">
       <div className="max-w-4xl mx-auto space-y-8">
         {/* 標題 */}
         <div className="text-center">
-          <h1 className="text-3xl md:text-4xl font-bold text-blue-600 mb-2">🎲 抽獎小工具</h1>
-          <p className="text-gray-600">簡單易用的抽獎系統</p>
+          <h1 className="text-3xl md:text-4xl font-bold text-red-600 mb-2">🎊 抽獎小工具</h1>
+          <p className="text-red-500">簡單易用的抽獎系統</p>
         </div>
 
         {/* 獎項資訊 */}
         <div className="bg-white rounded-xl shadow-lg p-6 space-y-4">
-          <h2 className="text-xl font-semibold text-gray-800 flex items-center gap-2">
-            <Gift className="text-blue-500" size={24} />
+          <h2 className="text-xl font-semibold text-red-800 flex items-center gap-2">
+            <Gift className="text-red-500" size={24} />
             獎項設定
           </h2>
           <div className="space-y-3">
             {prizes.map((prize, index) => (
-              <div key={index} className="flex items-center gap-3 bg-gray-50 p-3 rounded-lg">
-                <span className="text-gray-600 font-medium flex-1">{prize.name}</span>
+              <div key={index} className="flex items-center gap-3 bg-red-50 p-3 rounded-lg">
+                <span className="text-red-600 font-medium flex-1">{prize.name}</span>
                 <input
                   type="number"
                   value={prize.quantity}
@@ -146,11 +146,11 @@ const LotteryApp = () => {
                     newPrizes[index].quantity = parseInt(e.target.value) || 0;
                     setPrizes(newPrizes);
                   }}
-                  className="w-24 p-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-24 p-2 border border-red-200 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
                   min="1"
                   placeholder="名額"
                 />
-                <span className="text-gray-500">名</span>
+                <span className="text-red-500">名</span>
               </div>
             ))}
           </div>
@@ -162,7 +162,7 @@ const LotteryApp = () => {
           <textarea
             value={participants}
             onChange={(e) => setParticipants(e.target.value)}
-            className="w-full h-[32rem] p-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full h-[32rem] p-4 border border-red-200 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
             placeholder="請輸入參與者名單，每行一個名單"
           />
         </div>
@@ -171,7 +171,7 @@ const LotteryApp = () => {
         <div className="flex gap-4 flex-wrap">
           <button
             onClick={drawWinners}
-            className="flex-1 md:flex-none px-6 py-3 bg-blue-200 text-blue-700 rounded-lg hover:bg-blue-300 transition-colors flex items-center justify-center gap-2"
+            className="flex-1 md:flex-none px-6 py-3 bg-red-200 text-red-700 rounded-lg hover:bg-red-300 transition-colors flex items-center justify-center gap-2"
           >
             <RefreshCw size={20} />
             抽獎
@@ -179,7 +179,7 @@ const LotteryApp = () => {
           {drawn && (
             <button
               onClick={exportToCSV}
-              className="flex-1 md:flex-none px-6 py-3 bg-blue-200 text-blue-700 rounded-lg hover:bg-blue-300 transition-colors flex items-center justify-center gap-2"
+              className="flex-1 md:flex-none px-6 py-3 bg-red-200 text-red-700 rounded-lg hover:bg-red-300 transition-colors flex items-center justify-center gap-2"
             >
               <Download size={20} />
               匯出CSV
@@ -192,17 +192,17 @@ const LotteryApp = () => {
           <div className="bg-white rounded-xl shadow-lg p-6 space-y-4 overflow-x-auto">
             <h2 className="text-xl font-semibold text-gray-800">抽獎結果</h2>
             <table className="w-full">
-              <thead className="bg-gray-50">
+              <thead className="bg-red-50">
                 <tr>
-                  <th className="p-3 text-left text-gray-600 font-semibold rounded-tl-lg">獲獎者</th>
-                  <th className="p-3 text-left text-gray-600 font-semibold rounded-tr-lg">獎項</th>
+                  <th className="p-3 text-left text-red-600 font-semibold rounded-tl-lg">獲獎者</th>
+                  <th className="p-3 text-left text-red-600 font-semibold rounded-tr-lg">獎項</th>
                 </tr>
               </thead>
               <tbody>
                 {results.map((result, index) => (
-                  <tr key={index} className="border-t border-gray-100 hover:bg-gray-50 transition-colors">
-                    <td className="p-3 text-gray-800">{result.winner}</td>
-                    <td className="p-3 text-gray-800">{result.prize}</td>
+                  <tr key={index} className="border-t border-red-100 hover:bg-red-50 transition-colors">
+                    <td className="p-3 text-red-800">{result.winner}</td>
+                    <td className="p-3 text-red-800">{result.prize}</td>
                   </tr>
                 ))}
               </tbody>
