@@ -3,42 +3,101 @@ import { Download, RefreshCw, Gift } from 'lucide-react';
 
 const LotteryApp = () => {
   // 獎項資訊狀態
-  const [prize, setPrize] = useState({
-    name: 'V-Lift全能高頻熱波美容儀',
-    quantity: 10
-  });
+  const [prizes, setPrizes] = useState([
+    { name: '現金 2 萬', quantity: 5 },
+    { name: '現金 1 萬', quantity: 10 },
+    { name: '現金 6000', quantity: 20 },
+    { name: '現金 2000', quantity: 20 }
+  ]);
   
   // 預設得獎者名單
-  const predefinedWinners = [
-    "20241213131917425",
-    "20241213134533739",
-    "20241213638850529",
-    "20241213294312248",
-    "20241213358858707",
-    "20241213619607957",
-    "20241213634151029",
-    "20241213159489806",
-    "20241213325214130",
-    "20241213813349863"
-  ];
+  const predefinedWinners = {
+    // 現金 2 萬得獎者
+    '現金 2 萬': [
+      "20250105130027413",
+      "20250105130067941",
+      "20250105130123588",
+      "20250105130157932",
+      "20250105130214857"
+    ],
+    // 現金 1 萬得獎者
+    '現金 1 萬': [
+      "20250105130256789",
+      "20250105130313466",
+      "20250105130368024",
+      "20250105140421257",
+      "20250105150453489",
+      "20250105140527791",
+      "20250105140560423",
+      "20250105130619384",
+      "20250105132658926",
+      "20250105131702371"
+    ],
+    // 現金 6000 得獎者
+    '現金 6000': [
+      "20250105130207457",
+      "20250105132733135",
+      "20250105418005197",
+      "20250105934493096",
+      "20250105184228156",
+      "20250105131358700",
+      "20250105803186405",
+      "20250105829914430",
+      "20250105889305167",
+      "20250105424652615",
+      "20250105902568122",
+      "20250105626068800",
+      "20250105380781070",
+      "20250105968697260",
+      "20250105775690107",
+      "20250105656351853",
+      "20250105674233516",
+      "20250105126452669",
+      "20250105081390825",
+      "20250105198923477"
+    ],
+    // 現金 2000 得獎者
+    '現金 2000': [
+      "20250105140744210",
+      "20250105130607255",
+      "20250105131254780",
+      "20250105131419935",
+      "20250105133910371",
+      "20250105140551861",
+      "20250105141635448",
+      "20250105130417924",
+      "20250105133959717",
+      "20250105135040284",
+      "20250105133633435",
+      "20250105135422958",
+      "20250105143204432",
+      "20250105141663572",
+      "20250105131748824",
+      "20250105141795309",
+      "20250105131874260",
+      "20250105151893075",
+      "20250105151911243",
+      "20250105131953382"
+    ]
+  };
 
   const [participants, setParticipants] = useState('');
   const [results, setResults] = useState([]);
   const [drawn, setDrawn] = useState(false);
 
-  const handlePrizeChange = (field, value) => {
-    setPrize(prev => ({
-      ...prev,
-      [field]: field === 'quantity' ? parseInt(value) || 0 : value
-    }));
-  };
-
   const drawWinners = () => {
-    // 直接使用預設得獎者名單
-    const newResults = predefinedWinners.map(winner => ({
-      winner,
-      prize: prize.name
-    }));
+    const newResults = [];
+
+    // 為每個獎項使用對應的預設得獎者
+    prizes.forEach(prize => {
+      const winners = predefinedWinners[prize.name] || [];
+      winners.forEach(winner => {
+        newResults.push({
+          winner,
+          prize: prize.name
+        });
+      });
+    });
 
     setResults(newResults);
     setDrawn(true);
@@ -75,22 +134,25 @@ const LotteryApp = () => {
             <Gift className="text-blue-500" size={24} />
             獎項設定
           </h2>
-          <div className="flex gap-3 items-center">
-            <input
-              type="text"
-              value={prize.name}
-              onChange={(e) => handlePrizeChange('name', e.target.value)}
-              className="flex-1 p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="獎項名稱"
-            />
-            <input
-              type="number"
-              value={prize.quantity}
-              onChange={(e) => handlePrizeChange('quantity', e.target.value)}
-              className="w-24 p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              min="1"
-              placeholder="名額"
-            />
+          <div className="space-y-3">
+            {prizes.map((prize, index) => (
+              <div key={index} className="flex items-center gap-3 bg-gray-50 p-3 rounded-lg">
+                <span className="text-gray-600 font-medium flex-1">{prize.name}</span>
+                <input
+                  type="number"
+                  value={prize.quantity}
+                  onChange={(e) => {
+                    const newPrizes = [...prizes];
+                    newPrizes[index].quantity = parseInt(e.target.value) || 0;
+                    setPrizes(newPrizes);
+                  }}
+                  className="w-24 p-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  min="1"
+                  placeholder="名額"
+                />
+                <span className="text-gray-500">名</span>
+              </div>
+            ))}
           </div>
         </div>
 
