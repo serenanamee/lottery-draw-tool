@@ -1,104 +1,57 @@
 import React, { useState } from 'react';
-import { Download, RefreshCw, Gift } from 'lucide-react';
+import { Download, RefreshCw, Gift, Plus, Trash2 } from 'lucide-react';
 
 const LotteryApp = () => {
-  // 獎項資訊狀態
   const [prizes, setPrizes] = useState([
-    { name: '現金 2 萬', quantity: 5 },
-    { name: '現金 1 萬', quantity: 10 },
-    { name: '現金 6000', quantity: 20 },
-    { name: '現金 2000', quantity: 20 }
+    { name: '', quantity: 1 }
   ]);
   
-  // 預設得獎者名單
-  const predefinedWinners = {
-    // 現金 2 萬得獎者
-    '現金 2 萬': [
-      "#20250113134577421",
-      "#20250113169453969",
-      "#20250113132401348",
-      "#20250113111006757",
-      "#20250113126332336"
-    ],
-    // 現金 1 萬得獎者
-    '現金 1 萬': [
-      "#20250113144076981",
-      "#20250113102863490",
-      "#20250113168779213",
-      "#20250113129596022",
-      "#20250113131240823",
-      "#20250113131757304",
-      "#20250113160009616",
-      "#20250113147510242",
-      "#20250113122161631",
-      "#20250113136621010"
-    ],
-    // 現金 6000 得獎者
-    '現金 6000': [
-      "#20250113145816714",
-      "#20250113136685823",
-      "#20250113152825774",
-      "#20250113156771455",
-      "#20250113126216362",
-      "#20250113112523971",
-      "#20250113149361052",
-      "#20250113138820940",
-      "#20250113155142449",
-      "#20250113130353278",
-      "#20250113105478508",
-      "#20250113136090482",
-      "#20250113121856487",
-      "#20250113106749926",
-      "#20250113122846145",
-      "#20250113126531674",
-      "#20250113150405384",
-      "#20250113146255093",
-      "#20250113122982621",
-      "#20250113138523470"
-
-    ],
-    // 現金 2000 得獎者
-    '現金 2000': [
-      "#20250113131600210",
-      "#20250113144706944",
-      "#20250113145801613",
-      "#20250113150324274",
-      "#20250113150413897",
-      "#20250113152731121",
-      "#20250113155453173",
-      "#20250113141606246",
-      "#20250113154249745",
-      "#20250113145313195",
-      "#20250113135543803",
-      "#20250113133126890",
-      "#20250113130458212",
-      "#20250113130644510",
-      "#20250113133621349",
-      "#20250113143627395",
-      "#20250113142891241",
-      "#20250113152095466",
-      "#20250113162248453",
-      "#20250113154167388"
-    ]
-  };
-
   const [participants, setParticipants] = useState('');
   const [results, setResults] = useState([]);
   const [drawn, setDrawn] = useState(false);
 
-  const drawWinners = () => {
-    const newResults = [];
+  const addPrize = () => {
+    setPrizes([...prizes, { name: '', quantity: 1 }]);
+  };
 
-    // 為每個獎項使用對應的預設得獎者
-    prizes.forEach(prize => {
-      const winners = predefinedWinners[prize.name] || [];
-      winners.forEach(winner => {
-        newResults.push({
-          winner,
-          prize: prize.name
-        });
-      });
-    });
+  const removePrize = (index) => {
+    setPrizes(prizes.filter((_, i) => i !== index));
+  };
+
+  const drawWinners = () => {
+    const participantList = participants
+      .split('\n')
+      .map(p => p.trim())
+      .filter(p => p !== '');
+
+    if (participantList.length === 0) {
+      alert('請輸入參與者名單');
+      return;
+    }
+
+    if (prizes.some(prize => !prize.name.trim())) {
+      alert('請填寫所有獎項名稱');
+      return;
+    }
+
+    const totalPrizes = prizes.reduce((sum, prize) => sum + prize.quantity, 0);
+    if (participantList.length < totalPrizes) {
+      alert('參與者人數不足以分配所有獎項');
+      return;
+    }
+
+    const newResults = [];
+    let remainingParticipants = [...participantList];
+
+    for (const prize of prizes) {
+      for (let i = 0; i < prize.quantity; i++) {
+        if (remainingParticipants.length === 0) break;
+        const randomIndex = Math.floor(Math.random() * remainingParticipants.length);
+        const winner = remainingParticipants[randomIndex];
+        remainingParticipants.splice(randomIndex, 1);
+        newResults.push({ winner, prize: prize.name });
+      }
+    }
 
     setResults(newResults);
     setDrawn(true);
@@ -123,13 +76,11 @@ const LotteryApp = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-red-50 to-rose-100 p-4 md:p-8">
       <div className="max-w-4xl mx-auto space-y-8">
-        {/* 標題 */}
         <div className="text-center">
           <h1 className="text-3xl md:text-4xl font-bold text-red-600 mb-2">🎊 抽獎小工具</h1>
           <p className="text-red-500">簡單易用的抽獎系統</p>
         </div>
 
-        {/* 獎項資訊 */}
         <div className="bg-white rounded-xl shadow-lg p-6 space-y-4">
           <h2 className="text-xl font-semibold text-red-800 flex items-center gap-2">
             <Gift className="text-red-500" size={24} />
@@ -138,7 +89,17 @@ const LotteryApp = () => {
           <div className="space-y-3">
             {prizes.map((prize, index) => (
               <div key={index} className="flex items-center gap-3 bg-red-50 p-3 rounded-lg">
-                <span className="text-red-600 font-medium flex-1">{prize.name}</span>
+                <input
+                  type="text"
+                  value={prize.name}
+                  onChange={(e) => {
+                    const newPrizes = [...prizes];
+                    newPrizes[index].name = e.target.value;
+                    setPrizes(newPrizes);
+                  }}
+                  className="flex-1 p-2 border border-red-200 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                  placeholder="獎項名稱"
+                />
                 <input
                   type="number"
                   value={prize.quantity}
@@ -152,23 +113,35 @@ const LotteryApp = () => {
                   placeholder="名額"
                 />
                 <span className="text-red-500">名</span>
+                <button
+                  onClick={() => removePrize(index)}
+                  className="p-2 text-red-500 hover:text-red-700 focus:outline-none"
+                  disabled={prizes.length === 1}
+                >
+                  <Trash2 size={20} />
+                </button>
               </div>
             ))}
+            <button
+              onClick={addPrize}
+              className="w-full p-3 border-2 border-dashed border-red-200 rounded-lg text-red-500 hover:bg-red-50 flex items-center justify-center gap-2"
+            >
+              <Plus size={20} />
+              新增獎項
+            </button>
           </div>
         </div>
 
-        {/* 參與者名單 */}
         <div className="bg-white rounded-xl shadow-lg p-6 space-y-4">
           <h2 className="text-xl font-semibold text-gray-800">參與者名單</h2>
           <textarea
             value={participants}
             onChange={(e) => setParticipants(e.target.value)}
             className="w-full h-[32rem] p-4 border border-red-200 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
-            placeholder="請輸入參與者名單，每行一個名單"
+            placeholder="請輸入參與者名單，每行一個號碼"
           />
         </div>
 
-        {/* 操作按鈕 */}
         <div className="flex gap-4 flex-wrap">
           <button
             onClick={drawWinners}
@@ -188,7 +161,6 @@ const LotteryApp = () => {
           )}
         </div>
 
-        {/* 抽獎結果 */}
         {drawn && (
           <div className="bg-white rounded-xl shadow-lg p-6 space-y-4 overflow-x-auto">
             <h2 className="text-xl font-semibold text-gray-800">抽獎結果</h2>
